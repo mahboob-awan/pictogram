@@ -7,35 +7,17 @@
 
 
 	</style>
-
+	<link type="text/css" rel="stylesheet" href="css/reset.css">
 	<link type="text/css" rel="stylesheet" href="css/editor.css">
 
 </head>
 <body>
 <div class="editor">
-	<!-- <input type="range" min="0" max="500" value="3" id="x-axis"> -->
-	<!-- <div style="display: inline-flex;"> -->
-	<!-- <input type="range" min="0" max="500" value="3" id="y-axis"> -->
-	<svg id="i_root_svg" width="500" height="500" viewBox="0 0 500 500" style="border: 1px solid #ccc;">
-
-		
+	<svg id="i_root_svg" width="500" height="500" viewBox="0 0 500 500" style="border: 1px solid #ccc; background: rgba(234,239,242,.25) url(/images/blueprint-dark.png) top center;">
 		<g id="graph-editor" transform="matrix(1 0 0 1 0 0)"></g>
-		<g id="zoomer">
-			<circle xmlns="http://www.w3.org/2000/svg" cx="50" cy="50" r="42" fill="white" opacity="0.75"/>
-			<path xmlns="http://www.w3.org/2000/svg" class="control-button" onclick="pan( 0, 50)" d="M50 10 l12   20 a40, 70 0 0,0 -24,  0z"/>
-			<path xmlns="http://www.w3.org/2000/svg" class="control-button" onclick="pan( 50, 0)" d="M10 50 l20  -12 a70, 40 0 0,0   0, 24z"/>
-			<path xmlns="http://www.w3.org/2000/svg" class="control-button" onclick="pan( 0,-50)" d="M50 90 l12  -20 a40, 70 0 0,1 -24,  0z"/>
-			<path xmlns="http://www.w3.org/2000/svg" class="control-button" onclick="pan(-50, 0)" d="M90 50 l-20 -12 a70, 40 0 0,1   0, 24z"/>
-			<circle xmlns="http://www.w3.org/2000/svg" class="compass" cx="50" cy="50" r="20"/>
-			<circle xmlns="http://www.w3.org/2000/svg" class="control-button" cx="50" cy="41" r="8" onclick="zoom(0.8)"/>
-			<circle xmlns="http://www.w3.org/2000/svg" class="control-button" cx="50" cy="59" r="8" onclick="zoom(1.25)"/>
-			<rect xmlns="http://www.w3.org/2000/svg" class="plus-minus" x="46" y="39.5" width="8" height="3"/>
-			<rect xmlns="http://www.w3.org/2000/svg" class="plus-minus" x="46" y="57.5" width="8" height="3"/>
-			<rect xmlns="http://www.w3.org/2000/svg" class="plus-minus" x="48.5" y="55" width="3" height="8"/>
-		</g>
 	</svg>
-	<!-- </div> -->
 </div>
+
 <div class="controls">
 	<div class="c_images">
 		<img class="editor-choice-img" src="svg/afro.svg" >
@@ -46,13 +28,37 @@
 		<img class="editor-choice-img" src="svg/kid.svg" >
 		<img class="editor-choice-img" src="svg/little42.svg" >
 		<img class="editor-choice-img" src="svg/localization.svg" >
-		<img class="editor-choice-img" src="svg/volume14.svg" >
+		<img class="editor-choice-img" src="svg/tshirt2.svg" >
 	</div>
+
 	<div>
+		<ul class="c_colors">
+			<li class="editor-choice-color turquoise"></li>
+			<li class="editor-choice-color emerland"></li>
+			<li class="editor-choice-color peterriver"></li>
+			<li class="editor-choice-color amethyst"></li>
+			<li class="editor-choice-color wetasphalt"></li>
+			<li class="editor-choice-color greensea"></li>
+			<li class="editor-choice-color sunflower"></li>
+			<li class="editor-choice-color orange"></li>
+			<li class="editor-choice-color pomegranate"></li>
+			<li class="editor-choice-color asbestos"></li>
+		</ul>
+	</div>
+	
+	
+
+	<div>
+		<label>Horizontal<input type="range" min="0" max="500" value="0" id="x-axis" class="slider"></label>
+		
+		<label>Vertical<input type="range" min="0" max="500" value="0" id="y-axis" class="slider"></label>
+		<label>Scale<input type="range" min="1" max="5" value="1" id="zoom-axis" class="slider"></label>
+		
 		<label>Where each image =<input type="text" id="i_txt_ratio" class="input input-txt" name="ratio" width="40px"/></label>
 		<label>and total = <input type="text" id="i_txt_total" class="input input-txt" name="total" /></label>
 
 		<button id="i_b_draw">Let's Draw!</button>
+		<button id="i_b_update">Let's Update!</button>
 	</div>
 </div>
 <script type="text/javascript" src="js/util.js"></script>

@@ -1,163 +1,272 @@
 	//$0.setAttributeNS(null,"transform","matrix(1.25 0 0 1.25 10 0)") === translate(10) && scale(1.25){where 1.25 is 25%.}
 
-Editor = (function(){
+	Editor = (function() {
 
-	var transMatrix = [1, 0, 0, 1, 0, 0];
-	var currentGroup, graphEditor;
+		'use strict';
+		var transMatrix = [1, 0, 0, 1, 0, 0];
+		var currentGroup, graphEditor;
 
-	var height, width;
-	var groups = [];
-	var selectedImage;
+		var height, width;
+		var groups = [];
 
-	function init(event) {
-		// if (window.svgDocument == null) {
-		// 	svgDoc = event.target.ownerDocument;
-		// }
+		var selectedImage;
+		var selectedColor;
+		var selectedGroup;
 
-		graphEditor = DOM.byId("graph-editor");
-		width = graphEditor.getAttribute("width");
-		height = graphEditor.getAttribute("height");
-
-		bindUIActions();
-	}
-
-	function bindUIActions() {
-		var images = DOM.byClass('editor-choice-img');
-
-		images.forEach(function(image) {
-			image.onclick = function(event) {
-				selectedImage = event.target;
-				selectImage(images, selectedImage);
-
-			};
-		});
-
-		DOM.byId('i_b_draw').onclick = drawGraph;
-	}
-
-
-	function selectImage(images, selectedImage) {
-
-		images.forEach(function(image) {
-			DOM.removeClass(image, 'editor-choice-img-selected');
-		});
-		DOM.addClass(selectedImage, 'editor-choice-img-selected');
-	}
+		var IMAGE_WIDTH = 28;
+		var IMAGE_HEIGHT = 30;
 
 
 
-	function pan(dx, dy) {
-		var currentTarget = currentGroup || graphEditor;
-		transMatrix[4] += dx;
-		transMatrix[5] += dy;
+		function init(event) {
+			// if (window.svgDocument == null) {
+			// 	svgDoc = event.target.ownerDocument;
+			// }
 
-		newMatrix = "matrix(" + transMatrix.join(' ') + ")";
-		currentTarget.setAttributeNS(null, "transform", newMatrix);
-	}
+			graphEditor = DOM.byId("graph-editor");
+			width = graphEditor.getAttribute("width");
+			height = graphEditor.getAttribute("height");
 
-	function zoom(scale) {
-		var currentTarget = currentGroup || graphEditor;
-
-		for (var i = 0; i < transMatrix.length; i++) {
-			transMatrix[i] *= scale;
+			bindUIActions();
 		}
 
-		transMatrix[4] += (1 - scale) * width / 2;
-		transMatrix[5] += (1 - scale) * height / 2;
+		function bindUIActions() {
+			var images = DOM.byClass('editor-choice-img');
 
-		newMatrix = "matrix(" + transMatrix.join(' ') + ")";
-		currentTarget.setAttributeNS(null, "transform", newMatrix);
-	}
+			images.forEach(function(image) {
+				image.addEventListener('click', function(event) {
+					selectedImage = event.target;
+					selectElement(images, selectedImage, 'editor-choice-img-selected');
 
-
-	function createImage(name, position) {
-		var size = 50;
-		var options = {
-			width: size,
-			id: name +'-'+position,
-			x: size * position,
-			y: size * (groups.length + 1),
-			name: 'svg/' + name + '.svg'
-		};
-
-
-
-		groups[groups.length-1]['images'].push(options);
-
-		return SVG.createImage(options);
-	}
-
-
-
-	function getImageName(image) {
-		var src = image.src;
-		return src.substring(src.lastIndexOf("/") + 1, src.lastIndexOf("."));
-	}
-
-	function drawGraph() {
-		var ratio = DOM.byId('i_txt_ratio').value;
-		var total = DOM.byId('i_txt_total').value;
-		var image = DOM.byClass('editor-choice-img-selected')[0];
-
-		//TODO: validation
-		var totalImage = total / ratio;
-		var imageName = getImageName(image);
-		var group = createGroupElement(imageName, graphEditor);
-
-		// for (var i = 1; i <= totalImage; i += 1) {
-			// group.appendChild(createImage(imageName, i));
-		Util.fetchXML(image.src, function(newSVGDoc) {
-			for (var i = 1; i <= totalImage; i += 1) {
-				group.innerHTML += getPath(newSVGDoc);
-			}
-		});
-
-		// }
-	}
-
-	function getPath(svgDocument){
-		return svgDocument.getElementsByTagName('svg')[0].innerHTML;
-	}
-
-	function createGroupElement(name, editor) {
-		var options = {
-			id: name + '-group-' + groups.length,
-			images: []
-		}
-
-		var g = SVG.createGroup(options);
-		groups.push(options);
-		editor.appendChild(g);
-
-		g.onclick = function(event) {
-			currentGroup = event.currentTarget;
-
-			Util.toArray(graphEditor.getElementsByClassName('group-rect-selected')).forEach(function(element){element.parentElement.removeChild(element);})
-
-			//Workaround - can't apply border on group tag
-			var images = Util.toArray(currentGroup.children);
-			images.forEach(function(image){
-				var options = {
-					width: image.getAttribute('width'),
-					height: image.getAttribute('height'),
-					x: image.getAttribute('x'),
-					y: image.getAttribute('y'),
-					className: 'group-rect-selected'
-				};
-
-				g.appendChild(SVG.createRectangle(options));
-
+				});
 			});
 
-		};
+			//Color changer
+			var colors = DOM.byClass('editor-choice-color');
+			colors.forEach(function(color) {
+				color.addEventListener('click', function(event) {
+					selectedColor = event.target;
+					selectElement(colors, selectedColor, 'editor-choice-color-selected');
 
-		return g;
-	}
+				});
+			});
 
-	return {
-		init: init
-	}
 
-}());
+			DOM.byId('i_b_draw').onclick = drawGraph;
+			DOM.byId('i_b_update').onclick = updateGraph;
+		}
 
-	window.onload= Editor.init;
+
+		function selectElement(elements, selected, className) {
+
+			elements.forEach(function(element) {
+				DOM.removeClass(element, className);
+			});
+			DOM.addClass(selected, className);
+		}
+
+		function setColor(value) {
+			var element = DOM.firstByClass(value);
+			var colors = DOM.byClass('editor-choice-color');
+			var targetColor;
+
+			colors.forEach(function(colorElement) {
+				var rdbValue = window.getComputedStyle(colorElement).getPropertyValue("background-color");
+				if (rdbValue === value) {
+					targetColor = colorElement;
+				}
+			})
+			selectElement(colors, targetColor, 'editor-choice-color-selected');
+		}
+
+		function getColor() {
+			//TODO null handling
+			var colorElement = window.getComputedStyle(DOM.firstByClass('editor-choice-color-selected'))
+			if(colorElement){
+				return colorElement.getPropertyValue("background-color");
+			}
+			return "rgb(26, 188, 156)";//return first color in list
+			
+		}
+
+		function setImage(image) {
+			var images = DOM.byClass('editor-choice-img');
+			var targetImage;
+
+
+			//TODO - may be remove
+			images.forEach(function(imageElement) {
+				if (imageElement.src === image.src) {
+					targetImage = image;
+				}
+			});
+			selectElement(images, targetImage, 'editor-choice-img-selected');
+		}
+
+		function getImage() {
+			return DOM.firstByClass('editor-choice-img-selected')
+		}
+
+		function setX(value) {
+			DOM.byId('x-axis').value = value;
+		}
+
+		function getX() {
+			return DOM.byId('x-axis').value;
+		}
+
+		function setY(value) {
+			DOM.byId('y-axis').value = value;
+		}
+
+		function getY() {
+			return DOM.byId('y-axis').value;
+		}
+
+		function setZoom(value) {
+			DOM.byId('zoom-axis').value = value;
+		}
+
+		function getZoom() {
+			return DOM.byId('zoom-axis').value;
+		}
+
+		function getRatio() {
+			return DOM.byId('i_txt_ratio').value;
+		}
+
+		function setRatio(value) {
+			DOM.byId('i_txt_ratio').value = value;
+		}
+
+		function setTotal(value) {
+			DOM.byId('i_txt_total').value = value;
+		}
+
+		function getTotal() {
+			return DOM.byId('i_txt_total').value;
+		}
+
+		function getControls() {
+			var controls = {};
+
+			controls.image = getImage();
+			//TODO null handling
+			controls.color = getColor();
+
+			controls.ratio = getRatio();
+			controls.total = getTotal();
+			controls.x = getX();
+			controls.y = getY();
+			controls.zoom = getZoom();
+
+			return controls;
+
+		}
+
+		function setControls(controls) {
+			setImage(controls.image);
+			setColor(controls.color);
+			setRatio(controls.ratio);
+			setTotal(controls.total);
+			setX(controls.x);
+			setY(controls.y);
+			setZoom(controls.zoom);
+		}
+
+
+		function updateGroup(controls, selectedGroup) {
+
+			var group = createGroup(controls.x, controls.y, controls.zoom, selectedGroup);
+			updateCache(controls);
+			
+
+			group = insertImages(group, controls);
+			bindUIActionWithGroup(group);
+
+			return group;
+
+
+		}
+
+		function updateCache(controls){
+			if(selectedGroup){
+				groups[selectedGroup.id.substring(6)] = controls;
+			}
+			groups.push(controls);
+		}
+
+		function getControlsFromCache(group){
+			return groups[group.id.substring(6)];//if "group-0" & "group-".length === 6
+		}
+
+
+
+		function insertImages(group, controls) {
+			DOM.empty(group);
+
+			Util.fetchXML(controls.image.src, function(svgDocument) {
+				var totalImages = controls.total / controls.ratio;
+				var path = svgDocument.getElementsByTagName('svg')[0].children[0];
+
+				for (var i = 1; i <= (totalImages); i += 1) {
+					group.appendChild(getDuplicatePath(path, i, controls.color));
+				}
+			});
+
+			return group;
+		}
+
+		function drawGraph() {
+
+			var group = updateGroup(getControls());
+			graphEditor.appendChild(group);
+		}
+
+		function updateGraph(){
+			var group = updateGroup(getControls(), selectedGroup);
+			graphEditor.appendChild(group);
+		}
+
+		function getDuplicatePath(path, index, color) {
+			var temp = path.cloneNode(true);
+			temp.setAttribute('fill', color);
+			temp.setAttribute('transform', 'translate(' + index * IMAGE_WIDTH + ')');
+			return temp;
+		}
+
+		function bindUIActionWithGroup(group) {
+			group.addEventListener('click', function(event) {
+				selectedGroup = event.currentTarget;
+				selectElement(Util.toArray(graphEditor.children), selectedGroup, 'editor-group-selected');
+				setControls(getControlsFromCache(selectedGroup)); 
+
+			});
+		}
+
+
+		function createGroup(x, y, zoom, group) {
+			x = x || (1 + groups.length) * IMAGE_WIDTH;
+			y = y || (1 + groups.length) * IMAGE_HEIGHT;
+
+			var options = {
+				id: (group) ? group.id : 'group-' + groups.length,
+				x: x,
+				y: y,
+				zoom: zoom
+			};
+
+
+			// groups.push(options);
+			return SVG.createGroup(options, group);
+
+		}
+
+
+		return {
+			init: init
+		}
+
+	}());
+
+	window.onload = Editor.init;

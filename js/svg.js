@@ -23,11 +23,24 @@ SVG = (function() {
 		return img;
 	}
 
-	function createGroup(options) {
-		var g = createElement('g')
-		g.setAttribute('id', options.id);
+	function createGroup(options, g) {
+		var transform = '';
+		g = g || createElement('g')
+
+		g.setAttribute('id', options.id || '');
 		g.setAttribute('shape-rendering', 'inherit');
 		g.setAttribute('pointer-events', 'all');
+
+		if (options.x) {
+			transform += 'translate(' + options.x + ' ' + (options.y || options.x) + ')';
+		}
+
+		if (options.zoom) {
+			transform += ' scale(' + options.zoom + ')';
+		}
+
+		g.setAttribute('transform', transform);
+
 
 		return g;
 	}

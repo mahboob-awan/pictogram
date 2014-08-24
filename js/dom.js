@@ -1,31 +1,33 @@
 DOM = (function() {
 
 	'use strict';
-	
-	function byId(id){
+
+	function byId(id) {
 		return document.getElementById(id);
 	}
 
-	function byClass(className){
+	function byClass(className) {
 		return Util.toArray(document.getElementsByClassName(className));
 	}
+
+	function firstByClass(className) {
+		return byClass(className)[0];
+	}
+
 	function addClass(element, classToAdd) {
-		var currentClassValue = element.className;
+		var currentClassValue = element.getAttribute('class') || '';
 
 		if (currentClassValue.indexOf(classToAdd) == -1) {
-			if ((currentClassValue == null) || (currentClassValue === "")) {
-				element.className = classToAdd;
-			} else {
-				element.className += " " + classToAdd;
-			}
+			element.setAttribute('class', currentClassValue + " " + classToAdd);
 		}
+
 	}
 
 	function removeClass(element, classToRemove) {
-		var currentClassValue = element.className;
+		var currentClassValue = element.getAttribute('class') || '';
 
 		if (currentClassValue == classToRemove) {
-			element.className = "";
+			element.setAttribute('class', '');
 			return;
 		}
 
@@ -38,14 +40,24 @@ DOM = (function() {
 			}
 		}
 
-		element.className = filteredList.join(" ");
+		element.setAttribute('class', filteredList.join(" "));
 	}
 
-    return {
-    	byId: byId,
-    	byClass: byClass,
-        addClass: addClass,
-        removeClass: removeClass
-    }
+	function empty(selector) {
+		var element = (typeof selector === 'string') ? document.getElementById(selector) : selector;
+		while (element.firstChild) {
+			element.removeChild(element.firstChild);
+		}
+	}
+
+	return {
+		byId: byId,
+		firstByClass: firstByClass,
+		byClass: byClass,
+		addClass: addClass,
+		removeClass: removeClass,
+		empty: empty
+
+	}
 
 }());
