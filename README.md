@@ -14,8 +14,8 @@ Basic Requirement:
 - Also known as a pictogram
 
 Advanced Requirement:
-- Editor able to create more multiple charts, and each are independent to any other
-- Able to publish the whole editor as an image to social network (e.g. Pinterest)
+- Editor able to create more multiple charts, and each are independent to any other - TODO
+- Able to publish the whole editor as an image to social network (e.g. Pinterest) - TODO
 
 Important Note:
 - Take care not to have any memory leaks - DONE with simple logic flow
@@ -50,4 +50,4 @@ You need to execute these files from localhost server - because this project has
 TODOs
 =======
 - Two way data binding : SVG <--- Data ---> Controls
-- ...
+- Drag/Pan/Zoom 
