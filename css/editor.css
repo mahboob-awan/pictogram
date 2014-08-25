@@ -1,6 +1,10 @@
 body{
 	width: 505px;
 }
+.controls{
+	display: flex;
+	flex-wrap: nowrap;
+}
 .slider{
 	width: 150px;
 	margin: 5px;
@@ -10,12 +14,14 @@ body{
 	width: 49px;
 	height: 50px;
 	border: 1px solid #ccc;
+	padding: 5px;
 }
 .editor-choice-color{
 	width: 49px;
 	height: 50px;
 	display: inline;
 	float: left;
+	padding: 5px;
 }
 .editor-choice-img-selected{
 	background-color: rgb(251, 224, 132);

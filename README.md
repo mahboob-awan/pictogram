@@ -31,23 +31,23 @@ Important Note:
 
 WORK-FLOW
 =========
-1 - Investigation about Canvas & learned/develop images handling
-2 - Canvas seems not a good choice for this specific use-case because it;s does not save reference of rendered itmes
-3 - Investigation about SVG & learned/develop imagse handling
-4 - Save reference of rendered items but still have some gotchas
-5 - Designed basic UI for Pictogram
-6 - Architectural planning for logic flow
+- Investigation about Canvas & learned/develop images handling
+- Canvas seems not a good choice for this specific use-case because it;s does not save reference of rendered itmes
+- Investigation about SVG & learned/develop imagse handling
+- Save reference of rendered items but still have some gotchas
+- Designed basic UI for Pictogram
+- Architectural planning for logic flow
 
 
 Execution
 =========
 You need to execute these files from localhost server - because this project has AJAX requests
 
-Ruby guys can use - https://github.com/TimMoore/dotfiles/blob/master/.bashrc.d/serve.bash
-I am using this script - https://github.com/cowboy/dotfiles/blob/master/bin/serve for Ubuntu 14.04
+- Ruby guys can use - https://github.com/TimMoore/dotfiles/blob/master/.bashrc.d/serve.bash
+- I am using this script - https://github.com/cowboy/dotfiles/blob/master/bin/serve for Ubuntu 14.04
 
 
 TODOs
 =======
-1 - Two way data binding : SVG <--- Data ---> Controls
-2 - ...
+- Two way data binding : SVG <--- Data ---> Controls
+- ...

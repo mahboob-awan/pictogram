@@ -19,9 +19,6 @@
 
 
 		function init(event) {
-			// if (window.svgDocument == null) {
-			// 	svgDoc = event.target.ownerDocument;
-			// }
 
 			graphEditor = DOM.byId("graph-editor");
 			width = graphEditor.getAttribute("width");
@@ -31,6 +28,7 @@
 		}
 
 		function bindUIActions() {
+			//Images Control
 			var images = DOM.byClass('editor-choice-img');
 
 			images.forEach(function(image) {
@@ -41,7 +39,7 @@
 				});
 			});
 
-			//Color changer
+			//Colors Control
 			var colors = DOM.byClass('editor-choice-color');
 			colors.forEach(function(color) {
 				color.addEventListener('click', function(event) {
@@ -52,13 +50,13 @@
 			});
 
 
+			//Buttons
 			DOM.byId('i_b_draw').onclick = drawGraph;
 			DOM.byId('i_b_update').onclick = updateGraph;
 		}
 
 
 		function selectElement(elements, selected, className) {
-
 			elements.forEach(function(element) {
 				DOM.removeClass(element, className);
 			});
@@ -80,13 +78,12 @@
 		}
 
 		function getColor() {
-			//TODO null handling
 			var colorElement = window.getComputedStyle(DOM.firstByClass('editor-choice-color-selected'))
-			if(colorElement){
+			if (colorElement) {
 				return colorElement.getPropertyValue("background-color");
 			}
-			return "rgb(26, 188, 156)";//return first color in list
-			
+			return "rgb(26, 188, 156)"; //return first color from list
+
 		}
 
 		function setImage(image) {
@@ -179,9 +176,13 @@
 
 			var group = createGroup(controls.x, controls.y, controls.zoom, selectedGroup);
 			updateCache(controls);
-			
+
 
 			group = insertImages(group, controls);
+
+			if (!group) {
+				return;
+			}
 			bindUIActionWithGroup(group);
 
 			return group;
@@ -189,21 +190,24 @@
 
 		}
 
-		function updateCache(controls){
-			if(selectedGroup){
+		function updateCache(controls) {
+			if (selectedGroup) {
 				groups[selectedGroup.id.substring(6)] = controls;
 			}
 			groups.push(controls);
 		}
 
-		function getControlsFromCache(group){
-			return groups[group.id.substring(6)];//if "group-0" & "group-".length === 6
+		function getControlsFromCache(group) {
+			return groups[group.id.substring(6)]; //if "group-0" then "group-".length === 6
 		}
 
 
 
 		function insertImages(group, controls) {
 			DOM.empty(group);
+			if (!controls.image) {
+				return;
+			}
 
 			Util.fetchXML(controls.image.src, function(svgDocument) {
 				var totalImages = controls.total / controls.ratio;
@@ -223,9 +227,12 @@
 			graphEditor.appendChild(group);
 		}
 
-		function updateGraph(){
+		function updateGraph() {
 			var group = updateGroup(getControls(), selectedGroup);
-			graphEditor.appendChild(group);
+			if (group) {
+				graphEditor.appendChild(group);
+			}
+
 		}
 
 		function getDuplicatePath(path, index, color) {
@@ -239,7 +246,7 @@
 			group.addEventListener('click', function(event) {
 				selectedGroup = event.currentTarget;
 				selectElement(Util.toArray(graphEditor.children), selectedGroup, 'editor-group-selected');
-				setControls(getControlsFromCache(selectedGroup)); 
+				setControls(getControlsFromCache(selectedGroup));
 
 			});
 		}
@@ -256,8 +263,6 @@
 				zoom: zoom
 			};
 
-
-			// groups.push(options);
 			return SVG.createGroup(options, group);
 
 		}

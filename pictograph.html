@@ -13,13 +13,13 @@
 </head>
 <body>
 <div class="editor">
-	<svg id="i_root_svg" width="500" height="500" viewBox="0 0 500 500" style="border: 1px solid #ccc; background: rgba(234,239,242,.25) url(/images/blueprint-dark.png) top center;">
+	<svg id="i_root_svg" width="500" height="500" viewBox="100 0 500 500" style="border: 1px solid #ccc; background: rgba(234,239,242,.25) url(/images/blueprint-dark.png) top center;">
 		<g id="graph-editor" transform="matrix(1 0 0 1 0 0)"></g>
 	</svg>
 </div>
 
-<div class="controls">
-	<div class="c_images">
+<div>
+	<div class="controls">
 		<img class="editor-choice-img" src="svg/afro.svg" >
 		<img class="editor-choice-img" src="svg/bad.svg" >
 		<img class="editor-choice-img" src="svg/children.svg" >
@@ -32,7 +32,7 @@
 	</div>
 
 	<div>
-		<ul class="c_colors">
+		<ul class="controls">
 			<li class="editor-choice-color turquoise"></li>
 			<li class="editor-choice-color emerland"></li>
 			<li class="editor-choice-color peterriver"></li>
@@ -49,16 +49,20 @@
 	
 
 	<div>
+	<br/>
+
 		<label>Horizontal<input type="range" min="0" max="500" value="0" id="x-axis" class="slider"></label>
-		
+	<br/>		
 		<label>Vertical<input type="range" min="0" max="500" value="0" id="y-axis" class="slider"></label>
+		<br/>
 		<label>Scale<input type="range" min="1" max="5" value="1" id="zoom-axis" class="slider"></label>
+		<br/>
 		
 		<label>Where each image =<input type="text" id="i_txt_ratio" class="input input-txt" name="ratio" width="40px"/></label>
 		<label>and total = <input type="text" id="i_txt_total" class="input input-txt" name="total" /></label>
-
-		<button id="i_b_draw">Let's Draw!</button>
-		<button id="i_b_update">Let's Update!</button>
+		<br/>	
+		<button id="i_b_draw">Create New</button>
+		<button id="i_b_update">Update selected</button>
 	</div>
 </div>
 <script type="text/javascript" src="js/util.js"></script>
