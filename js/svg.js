@@ -2,7 +2,6 @@ SVG = (function() {
 	'use strict';
 	// Default namespaces
 	var ns = "http://www.w3.org/2000/svg";
-	// var xmlns = 'http://www.w3.org/2000/xmlns/';
 	var xlink = 'http://www.w3.org/1999/xlink';
 
 
